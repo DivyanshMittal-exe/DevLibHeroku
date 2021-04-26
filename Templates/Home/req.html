@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{% static 'Home/reqstyle.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    Homepage
+</title>
+</head>
+<body>
+    <header>
+        <a href="/"><img src="{% static 'DevLibrary.png' %}" alt="" width = "100"></a>
+        <nav>
+            <ul class = "nvlinks">
+
+                {% if user.is_authenticated %}
+                <li><a href="/user/">Hello, {{user.username}}</a></li>
+                <li><a href="/create/">Add Book</a></li>
+                <li><a href="/create/">Manual Issue</a><li>
+                <li><a href="/req/">View Requests</a><li>                 
+                <li><a href="/logout/">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class = "searchbar">
+        <form action = "/search/" method = "GET">
+         <input type="text" placeholder="Search..." name="srch" id="srch">
+         <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div>
+    <table class="table" border = "2px solid black" style="margin-left:auto;margin-right:auto;width:90%">
+        <thead>
+            <tr>
+                <th style = "padding: 16px; width:10%;">Tile</th>
+                <th style = "padding: 16px; width:10%;">User</th>
+                <th style = "padding: 16px; width:10%;">Date of Issue/Request</th>
+                <th style = "padding: 16px; width:10%;">Date of Return</th>
+                <th style = "padding: 16px; width:10%;">State</th>
+                <th style = "padding: 16px; width:10%;">Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for issue in issues %}
+        
+            <tr>
+                <td style = "padding: 16px; width:10%;" scope="row">{{issue.Title}}</td>
+                <td style = "padding: 16px; width:10%;">{{issue.User}}</td>
+                <td style = "padding: 16px; width:10%;">{{issue.DoI}}</td>
+                {% if issue.DoD < day %}
+                {% if issue.State == "Issued" or issue.State == "Extended Issue" or issue.State == "Request Extension" or issue.State == "Issued/Ext Denied"  %}
+                <td style = "padding: 16px; width:10%;color:red;">{{issue.DoD}}</td>
+                {% endif %}
+                {% else %}
+                <td style = "padding: 16px; width:10%;">{{issue.DoD}}</td>
+                {% endif %}
+                <td style = "padding: 16px; width:10%;">{{issue.State}}</td>
+                <td style = "padding: 16px; width:10 %;">{{issue.Comments}}</td>
+                {% if issue.State == "Issued" or issue.State == "Extended Issue" or issue.State == "Issued/Ext Denied"  %}
+                <td style = "padding: 16px; width:10%;">
+                <form action = "/return/{{issue.id}}" method = "POST">
+                {% csrf_token %}
+                    <button type="Submit" class= "bttts" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#238636;border:none;border-radius:5px;"> Mark as returned </button>
+                </form>
+                </td>
+                {% elif issue.State == "Requested" %}
+                <td style = "padding: 16px; width:10%;">
+                <form action = "/issuereq/{{issue.id}}" method = "POST">
+                {% csrf_token %}
+                    <button type="Submit" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#238636;border:none;border-radius:5px;"> Issue Book </button>
+                </form>
+                <form action = "/reject/{{issue.id}}" method = "POST">
+                {% csrf_token %}
+                    <button type="Submit" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#e63946;border:none;border-radius:5px;"> Reject Issue </button>
+                </form>
+                </td>
+                {% elif issue.State == "Request Extension" %}
+                <td style = "padding: 16px; width:10%;">
+                <form action = "/reqexty/{{issue.id}}" method = "POST">
+                {% csrf_token %}
+                    <button type="Submit" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#238636;border:none;border-radius:5px;"> Accept extension</button>
+                </form>
+                <form action = "/reqextn/{{issue.id}}" method = "POST">
+                {% csrf_token %}
+                    <button type="Submit" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#e63946;border:none;border-radius:5px;"> Deny Extension </button>
+                </form>
+                </td>
+
+
+                {% endif %}
+                
+            
+            </tr>
+        
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+    <footer>
+        
+    </footer>
+</body>

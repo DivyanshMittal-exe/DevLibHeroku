@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{% static 'Home/stylelib.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    Homepage
+</title>
+</head>
+<body style= "background-color:#090c10;">
+    <header>
+        <a href="/"><img src="{% static 'DevLibrary.png' %}" alt="" width = "100"></a>
+        <nav>
+            <ul class = "nvlinks">
+
+                {% if user.is_authenticated %}
+                <li><a href="/user/">Hello, {{user.username}}</a></li>
+                <li><a href="/admin/">Libraran Panel</a></li>
+                <li><a href="/create/">Add Book</a></li>
+                <li><a href="/createissue/">Manual Issue</a><li>
+                <li><a href="/req/">View Requests</a><li>                 
+                <li><a href="/logout/">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class = "searchbar">
+        <form action = "/search/" method = "GET">
+         <input type="text" placeholder="Search..." name="srch" id="srch">
+         <button type="submit">Submit</button>
+        </form>
+        <a href= "/trend/" style ="color:white;text-decoration:none;"><button style="margin:0px 0px 5px 10px">  Show trending </button></a>
+        <a href= "/sortrate/" style ="color:white;text-decoration:none;"><button style="margin:0px 0px 5px 10px">  Sort by rating  </button></a>
+        <a href= "/sortnew/" style ="color:white;text-decoration:none;"><button style="margin:0px 0px 5px 10px">  Sort by new  </button></a>
+        <a href= "/sortavlbl/" style ="color:white;text-decoration:none;"><button style="margin:0px 0px 5px 10px">  Show available  </button></a>
+    </div>
+
+    <div>
+    <table class="table" border = "2px solid #30363d" style="margin-left:auto;margin-right:auto;width:90%;color:#f0f6fc;background-color:#0d1117">
+        <thead>
+            <tr>
+                <th style = "padding: 16px; width:20%;">Tile</th>
+                <th style = "padding: 16px; width:20%;">Author</th>
+                <th style = "padding: 16px; width:20%;">Publisher</th>
+                <th style = "padding: 16px; width:20%;">Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book in books%}
+        
+            <tr>
+                <td style = "padding: 16px; width:20%;" scope="row">{{book.Title}}</td>
+                <td style = "padding: 16px; width:20%;">{{book.Author}}</td>
+                <td style = "padding: 16px; width:20%;">{{book.Publisher}}</td>
+               {% if book.Lost %}
+                <td style = "padding: 16px; width:20%;">Lost/Stolen/NA</td>
+                {% else %}
+                    {% if book.Available %}
+                    <td style = "padding: 16px; width:20%;">Available</td>
+                    {% else %}
+                    <td style = "padding: 16px; width:10%;background-color:#21262d;">Not available</td>
+                    {% endif %}
+                {% endif %}
+                <td style = "padding: 16px; width:20%;background-color:#21262d;"><a href ="/book/{{book.id}}">View More </a><br><br><a href ="/editbook/{{book.id}}"> Edit Book</a></td>
+                
+            
+            </tr>
+        
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+    <footer>
+        
+    </footer>
+</body>

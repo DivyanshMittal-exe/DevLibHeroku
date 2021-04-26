@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{% static 'book/nstyle.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    Homepage
+</title>
+</head>
+<body style="background-color:#090c10;color:#f0f6fc">
+    <header>
+       <a href="/"><img src="{% static 'DevLibrary.png' %}" alt="" width = "100"></a>
+        <nav>
+            <ul class = "nvlinks">
+
+                {% if user.is_authenticated %}
+                <li>Hello, {{user.username}}</li>                
+                <li><a href="/logout/">Logout</a></li>
+                {% else %}
+                <li><a href="/register/">Sign up</a></li>                
+                <li><a href="/login/">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class = "newbook" style="display:block;margin-left:auto;background-color:#0d1117;color:#f0f6fc;border:2px solid #30363d;border-radius:10px;">
+        <form method = "POST"> {% csrf_token %}
+        {{form.as_p}}
+        <input type = 'submit' value = 'Add New Book' class= "butn" style="background-color:#238636;margin-left:0%;padding: 1% 2%;border:none;border-radius:5px;color:#f0f6fc"/>
+        </form>
+    </div>
+
+
+    <footer>
+        
+    </footer>
+</body>
+

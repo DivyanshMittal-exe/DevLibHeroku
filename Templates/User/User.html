@@ -1,0 +1,100 @@
+{% load static %}
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{% static 'User/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    Homepage
+</title>
+</head>
+<body style="color:#f0f6fc;background-color:#090c10">
+    <header >
+        <a href="/"><img src="{% static 'DevLibrary.png' %}" alt="" width = "100"></a>
+        <nav>
+            <ul class = "nvlinks">
+
+                <li>Hello, {{user.username}}</li>                
+                <li><a href="/logout/">Logout</a></li>
+
+            </ul>
+        </nav>
+    </header>
+    <div class="usr-dta" style="color:#f0f6fc;background-color:#0d1117">
+        <ul>
+        <li>
+        <p>Username: {{user.username}}</p>
+        
+    </li>
+  <li>
+    <p>Email: {{user.email}}</p>
+   
+  </li>
+  
+    </ul>
+    <br>
+    <br>
+
+    <table class="table" border = "2px solid white" style="margin-left:auto;margin-right:auto;width:90%;color:#f0f6fc;background-color:#21262d">
+        
+        <caption>My Books</caption>
+        <thead>
+            <tr>
+                <th style = "padding: 16px; width:20%;">Title</th>
+                <th style = "padding: 16px; width:20%;">Date of Issue</th>
+                <th style = "padding: 16px; width:20%;">Return Date</th>
+                <th style = "padding: 16px; width:20%;">State</th>
+                <th style = "padding: 16px; width:20%;">Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bk in bks %}
+
+                {% if bk.DoD < today %}
+                    {% if bk.State == "Issued" or bk.State == "Extended Issue" or bk.State == "Request Extension" or bk.State == "Issued/Ext Denied"  %}
+                    {% if bk.User == user.username %}
+                        <tr>
+                            <td scope="row" style = "padding: 16px; width:20%;color:#e63946;">{{bk.Title}}</td>
+                            <td style = "padding: 16px; width:20%;color:#e63946;">{{bk.DoI}}</td>
+                            <td style = "padding: 16px; width:20%;color:#e63946;">{{bk.DoD}}</td>
+                            <td style = "padding: 16px; width:20%;color:#e63946;">{{bk.State}}</td>
+                            <td style = "padding: 16px; width:20%;color:#e63946;">{{bk.Comments}}</td>
+                            <td style = "padding: 16px; width:20%;color:#e63946;">Overdue: Return Immediately</td>  
+                            {% if bk.State == 'Issued' %}
+                                <td style = "padding: 16px; width:20%;">
+                                <form action ="/reqext/{{bk.id}}" method="POST">{% csrf_token %}
+                                <button type="Submit"  style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#238636;border:none;border-radius:5px;">Request Extension</button>
+                                </form>
+                                </td>
+                                {% endif %}
+                        </tr>
+                    {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% if bk.User == user.username %}
+                        <tr>
+                            <td scope="row" style = "padding: 16px; width:20%;">{{bk.Title}}</td>
+                            <td style = "padding: 16px; width:20%;">{{bk.DoI}}</td>
+                            <td style = "padding: 16px; width:20%;">{{bk.DoD}}</td>
+                            <td style = "padding: 16px; width:20%;">{{bk.State}}</td>
+                            <td style = "padding: 16px; width:20%;">{{bk.Comments}}</td>
+                                {% if bk.State == 'Issued' %}
+                                <td style = "padding: 16px; width:20%;">
+                                <form action ="/reqext/{{bk.id}}" method="POST">{% csrf_token %}
+                                <button type="Submit" style="margin: 10px; padding:7px 13px;color:#f0f6fc;background-color:#238636;border:none;border-radius:5px;">Request Extension</button>
+                                </form>
+                                </td>
+                                {% endif %}
+                        </tr>
+                    {% endif %}
+
+                {% endif %}
+            
+            {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+
+
+ </body>

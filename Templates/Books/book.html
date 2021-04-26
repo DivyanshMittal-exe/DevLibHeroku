@@ -1,0 +1,115 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{% static 'book/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    Homepage
+</title>
+</head>
+<body style="background-color:#090c10;color:#f0f6fc">
+    <header>
+        <a href="/"><img src="{% static 'DevLibrary.png' %}" alt="" width = "100"></a>
+        <nav>
+            <ul class = "nvlinks">
+
+                {% if user.is_authenticated %}
+                <li>Hello, {{user.username}}</li>                
+                <li><a href="/logout/">Logout</a></li>
+                {% else %}
+                <li><a href="/register/">Sign up</a></li>                
+                <li><a href="/login/">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class = "mn" style="display:block;margin-left:auto;background-color:#0d1117;color:#f0f6fc;border:2px solid #30363d;border-radius:10px;">
+
+
+
+    <ul>
+        <li>
+        <p>Title: {{title}}</p>
+    </li>
+  <li>
+    <p>Author: {{auth}}</p>
+  </li>
+  <li>
+        <p>Publisher: {{pub}}</p>
+    </li>
+      <li>
+        <p>Genre:{{gen}}</p>
+    </li>
+    <li>
+        <p>ISBN: {{isbn}}</p>
+    </li>
+        <li>
+        <p>Comments: {{comm}}</p>
+    </li>
+     <li>
+     <a href="{{url}}">
+     <p>Get online copy</p>
+     </a>
+        
+    </li>
+    <li>
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    </li>
+
+    {% if user.is_authenticated and avlbl and req %}
+        <li>
+          <form action ="/issue/{{id}}" method="POST">{% csrf_token %}
+          <button type="Submit" style="background-color:#238636;margin-left:70%;padding: 1% 2%;border:none;border-radius:5px;color:#f0f6fc">Issue Book</button>
+          </form>
+        </li>
+        {% elif user.is_authenticated == False %}
+        <li>
+          <form method="POST">{% csrf_token %}
+          <button type="Submit" style="margin-left:70%;padding: 1% 2%;border:none;border-radius:5px;color:#f0f6fc" disabled>Login first</button>
+          </form>
+        </li>
+        {% elif avlbl == False %}
+        <li>
+          <form method="POST">{% csrf_token %}
+          <button type="Submit" style="margin-left:70%;padding: 1% 2%;border:none;border-radius:5px;color:#f0f6fc" disabled>Book not avaiable</button>
+          </form>
+        </li>
+
+    {% endif %}
+    </ul> 
+    </div>
+
+    <div style="margin-left:auto;margin-right:auto;padding:16px;margin-top:35px;; width:80%;display:block;background-color:#0d1117;color:#f0f6fc;border:2px solid #30363d;border-radius:10px;">
+
+    {% if user.is_authenticated and hasNR %}
+        <form action = "/rate/{{id}}" method = "POST" class="rate-area" style = "padding:10px; margin-left:16px">
+        {% csrf_token %}
+        <input type="radio" name="star" value="1" style = "padding:10px; margin-left:16px">1★
+        <input type="radio" name="star" value="2" style = "padding:10px; margin-left:16px">2★
+        <input type="radio" name="star" value="3" style = "padding:10px; margin-left:16px">3★
+        <input type="radio" name="star" value="4" style = "padding:10px; margin-left:16px">4★
+        <input type="radio" name="star" value="5" style = "padding:10px; margin-left:16px">5★
+        <input type="text" placeholder="Add Comment..." name="comm" id="comm">
+        <button type="Submit" style="background-color:#238636;margin-left:10%;padding: 1% 2%;border:none;border-radius:5px;color:#f0f6fc;"> Rate Book </button>
+        </form>
+       {% endif %} 
+        <p style="margin-left:12px;"> Rating of the book: {{rt}}★ </p> 
+        <br>
+    {% for rate in ratigs %}
+    <p style="margin-left:24px;">{{rate.usrrnme}} : {{rate.comment}} ({{rate.rates}}★)</p>
+    
+    {% endfor %}
+
+    </div>
+    
+
+    <footer>
+        
+    </footer>
+</body>
+    
+
