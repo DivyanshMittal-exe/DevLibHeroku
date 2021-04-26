@@ -252,10 +252,10 @@ def book_view(request,id,*args,**kwargs):
             "url":obj.SoftCopy,
             "id":obj.id,
             "req":req,
-            "ratigs":bookratings,
-            "rt":fr,
+            #"ratigs":bookratings,
+            #"rt":fr,
             "url":obj.SoftCopy,
-            "hasNR":hasNotRated
+            #"hasNR":hasNotRated
         }
         obj.Available = False
         obj.save()
